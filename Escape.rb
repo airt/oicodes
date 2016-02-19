@@ -1,89 +1,94 @@
 
-class Maze
+# http://www.codewars.com/kata/5326ef17b7320ee2e00001df
 
-  def initialize(map)
-    @map = copy_map(map)
+def solve(mine, miner, exit)
+
+  def deepclone(src)
+    Marshal.load(Marshal.dump(src))
   end
 
-  def run(entrance, exit)
-    x , y    = entrance[:x], entrance[:y]
-    ex, ey   = exit[:x],     exit[:y]
-    @archive = [[x, y]]
-    @path    = [[]]
+  def up(pos)
+    {'x' => pos['x'], 'y' => pos['y'] - 1}
+  end
 
-    loop do
-      step = which_way(x, y)
-      case step.length
-      when 0 then x, y = load
-      when 1 then x, y = next_step(step[0], x, y)
-      else
-        save(x, y)
-        x, y = next_step(step[0], x, y)
+  def down(pos)
+    {'x' => pos['x'], 'y' => pos['y'] + 1}
+  end
+
+  def left(pos)
+    {'x' => pos['x'] - 1, 'y' => pos['y']}
+  end
+
+  def right(pos)
+    {'x' => pos['x'] + 1, 'y' => pos['y']}
+  end
+
+  def way?(mine, pos)
+    x = pos['x']
+    y = pos['y']
+    (x >= 0) && (y >= 0) &&
+      (x <= mine.length - 1) &&
+      (y <= mine[0].length - 1) &&
+      mine[x][y]
+  end
+
+  def wherecango(mine, pos)
+    d = []
+    d << 'up'    if way?(mine, up(pos))
+    d << 'left'  if way?(mine, left(pos))
+    d << 'down'  if way?(mine, down(pos))
+    d << 'right' if way?(mine, right(pos))
+    d
+  end
+
+  def go(pos, step)
+    case step
+    when 'up'    then up(pos)
+    when 'left'  then left(pos)
+    when 'down'  then down(pos)
+    when 'right' then right(pos)
+    end
+  end
+
+  def save(archives, steps, pos)
+    archives.push([deepclone(steps), pos])
+    archives
+  end
+
+  def load(archives)
+    if archives.empty?
+      p 'bad archives'
+      exit(1)
+    end
+    steps, pos = archives.pop
+    return archives, steps, pos
+  end
+
+  def run(mine, archives, steps, pos, exit)
+    if pos == exit
+      return mine, archives, steps, pos
+    end
+
+    directions = wherecango(mine, pos)
+
+    if directions.empty?
+      mine[pos['x']][pos['y']] = false
+      archives, steps, pos = load(archives)
+    else
+      if directions.length > 1
+        archives = save(archives, steps, pos)
       end
-      break if x == ex && y == ey
+      step = directions.first
+      mine[pos['x']][pos['y']] = false
+      steps = steps << step
+      pos = go(pos, step)
     end
-    return @path.flatten
+
+    run(mine, archives, steps, pos, exit)
   end
 
-  def next_step(direction, x, y)
-    @map[y][x] = false
-    @path.last << direction
-    case direction
-    when :up
-      y -= 1
-    when :down
-      y += 1
-    when :left
-      x -= 1
-    when :right
-      x += 1
-    end
-    return x, y
-  end
-
-  def which_way(x, y)
-    step = []
-    step << :up    if is_way?(x, y - 1)
-    step << :down  if is_way?(x, y + 1)
-    step << :left  if is_way?(x - 1, y)
-    step << :right if is_way?(x + 1, y)
-    return step
-  end
-
-  def is_way?(x, y)
-    return false if (x < 0) || (y < 0) || (x > @map[0].length-1) || (y > @map.length-1)
-    return @map[y][x]
-  end
-
-  def save(x, y)
-    @path.push([])
-    @archive.push([x, y])
-  end
-
-  def load
-    raise 'mysterious error' if @archive.empty?
-    @path.pop
-    x, y = @archive.pop
-    return x, y
-  end
-
-  def copy_map(src)
-    lx, ly = src.length, src[0].length
-    ret = Array.new(lx) {Array.new(ly)}
-    lx.times do |i|
-      ret[i] = src[i].dup
-    end
-    return ret
-  end
-
-end
-
-def solve(map, entrance, exit)
-  steps = Maze.new(map).run(entrance, exit)
-  puts "entrance: #{entrance}"
-  puts "exit:     #{exit}"
-  puts 'steps:'
-  p steps
+  mine, archives, steps, pos = run(deepclone(mine), [], [], miner, exit)
+  steps
 end
 
 def paint_map(map)
@@ -113,23 +118,17 @@ end
 
 if __FILE__ == $0
 
-  map = [
+  minemap = [
     [true , true , true , true , true ],
-    [true , false, false, false, false],
-    [true , false, true , true , true ],
-    [true , false, false, false, true ],
-    [true , true , true , true , true ]
+    [true , false, true , false, true ],
+    [false, true , true , true , false],
+    [true , false, false, true , true ],
+    [true , true , true , true , false]
   ]
-  paint_map(map)
+  paint_map(minemap)
 
-  puts 'First------------------------------'
-  entrance = {x: 2, y: 2}
-  exit     = {x: 4, y: 0}
-  solve(map, entrance, exit)
+  puts solve(minemap, {'x'=>0,'y'=>4}, {'x'=>3,'y'=>0})
 
-  puts 'Second------------------------------'
-  entrance = {x: 4, y: 0}
-  exit     = {x: 2, y: 2}
-  solve(map, entrance, exit)
+  # ['up','up','right','right','down','right','right','up','up','up','left']
 
 end
