@@ -14,22 +14,17 @@
 # > 102 / 0
 # => ZeroDivisionError
 
-# not support now
-
-# > -233
-# ...
-
 module ExpUtils
 
-  PriorityOfOpr = {
+  Priorities = {
     '(' => 0,
     ')' => 9,
-    '+' => 1,
-    '-' => 1,
-    '*' => 2,
-    '/' => 2,
-    '%' => 2,
-    '^' => 3,
+    '+' => 6,
+    '-' => 6,
+    '*' => 7,
+    '/' => 7,
+    '%' => 7,
+    '^' => 8,
   }
 
   module_function
@@ -40,10 +35,18 @@ module ExpUtils
 
   def tokenize(input)
     plums = input.clone
-    PriorityOfOpr.keys
+    Priorities.keys
       .each { |o| plums.gsub!(o, ' ' + o + ' ') }
-    plums.strip
-         .split(/\s+/)
+    tokens = plums.strip.split /\s+/
+    tokens.reduce [] do |acc, x|
+      if (!acc[-1].nil? && acc[-1] == '-' &&
+          (acc[-2].nil? ||
+            Priorities.keys.include?(acc[-2])))
+        acc[0..-2] << ('-' + x)
+      else
+        acc << x
+      end
+    end
   end
 
   def infix_to_suffix(arr_infix)
@@ -51,7 +54,7 @@ module ExpUtils
     arr_suffix = []
 
     arr_infix.each do |e|
-      if !PriorityOfOpr.key?(e) # e is Numeric
+      if not Priorities.key? e # e is Numeric
         arr_suffix << e
       else
         if e == ')'
@@ -63,7 +66,7 @@ module ExpUtils
         elsif e == '(' ||
             oprs_stack.empty? ||
             [e, oprs_stack.last]
-              .map { |o| PriorityOfOpr[o] }
+              .map { |o| Priorities[o] }
               .reduce(&:>)
           oprs_stack << e
 
@@ -73,7 +76,7 @@ module ExpUtils
             arr_suffix << opr
             break if oprs_stack.empty? ||
                       [opr, oprs_stack.last]
-                        .map { |o| PriorityOfOpr[o] }
+                        .map { |o| Priorities[o] }
                         .reduce(&:==)
           end
           oprs_stack << e
@@ -88,23 +91,21 @@ module ExpUtils
     arr_suffix + oprs_stack.reverse
   end
 
-  def func_of(opr)
+  def opr_to_lambda(opr)
     osym = (opr == '^' ? '**' : opr).to_sym
-    -> (x) {
-      x.reduce(&osym)
-    }
+    -> (x) { x.reduce(&osym) }
   end
 
   def eval_suffix(arr_suffix)
     runtime = []
 
     arr_suffix.each do |e|
-      if !PriorityOfOpr.key?(e) # e is Numeric
+      if not Priorities.key? e # e is Numeric
         runtime << e.to_r
       else
         begin
           runtime <<
-            func_of(e)
+            opr_to_lambda(e)
               .call([runtime.pop, runtime.pop].reverse)
 
         rescue ZeroDivisionError => e
@@ -118,10 +119,7 @@ module ExpUtils
 
 end
 
-
 if __FILE__ == $0
-
-  # require 'pp'
 
   loop do
     print ' > '
@@ -130,10 +128,7 @@ if __FILE__ == $0
     input.chomp!
     next if input.empty?
     print ' => '
-    puts ExpUtils.eval(input)
-    # pp arr_infix = ExpUtils.tokenize(input)
-    # pp arr_suffix = ExpUtils.infix_to_suffix(arr_infix)
-    # puts ret = ExpUtils.eval_suffix(arr_suffix)
+    puts ExpUtils.eval input
   end
 
 end
