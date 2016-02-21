@@ -1,26 +1,25 @@
 
 module Heart
-
-  Version = '0.0'
-
   module_function
 
-  def print2D
+  def h2d
+    output = ""
     (-15...15).each do |y1|
       y = y1 / -10.0
       (-30...30).each do |x1|
         x = x1 / 20.0
-        print (x**2 + y**2 - 1)**3 <= (x**2 * y**3) ? '*' : ' '
+        output << ((x**2 + y**2 - 1)**3 <= (x**2 * y**3) ? '*' : ' ')
       end
-      puts
+      output << "\n"
     end
+    output
   end
 
-  def print3D
+  def h3d
+    output = ""
     ac = '.:-=+*#%@'
     (-30...30).each do |zn20|
       z = zn20 / -20.0
-      out = ''
       (-60...60).each do |x40|
         x = x40 / 40.0
         if f(x, 0.0, z) <= 0
@@ -29,18 +28,19 @@ module Heart
           nx = h(x + ny, z) - y0
           nz = h(x, z + ny) - y0
           d = (nx + ny - nz) / Math.sqrt(nx**2 + ny**2 + nz**2) * 2.5 + 2.5
-          out += ac[d]
+          output << ac[d]
         else
-          out += ' '
+          output << ' '
         end
       end
-      puts out
+      output << "\n"
     end
+    output
   end
 
   def f(x, y, z)
-    a = x**2 + 9.0/4.0 * y**2 + z**2 - 1
-    a**3 - x**2 * z**3 - 9.0/80.0 * y**2 * z**3
+    a = x**2 + 9.0 / 4.0 * y**2 + z**2 - 1
+    a**3 - x**2 * z**3 - 9.0 / 80.0 * y**2 * z**3
   end
 
   def h(x, z)
@@ -50,13 +50,11 @@ module Heart
     end
     0
   end
-
 end
 
 if __FILE__ == $0
 
-  # puts "Version: #{Heart::Version}"
-  Heart.print2D
-  Heart.print3D
+  puts Heart.h2d
+  puts Heart.h3d
 
 end

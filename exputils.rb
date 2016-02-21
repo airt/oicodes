@@ -1,6 +1,6 @@
 
+##
 # supports
-
 # > 1 + 2
 # => 3/1
 # > 1.2 * 2.7
@@ -13,10 +13,9 @@
 # => 1267650600228229401496703205376/1
 # > 102 / 0
 # => ZeroDivisionError
-
 module ExpUtils
 
-  Priorities = {
+  PRIORITIES = {
     '(' => 0,
     ')' => 9,
     '+' => 6,
@@ -24,7 +23,7 @@ module ExpUtils
     '*' => 7,
     '/' => 7,
     '%' => 7,
-    '^' => 8,
+    '^' => 8
   }
 
   module_function
@@ -35,13 +34,11 @@ module ExpUtils
 
   def tokenize(input)
     plums = input.clone
-    Priorities.keys
-      .each { |o| plums.gsub!(o, ' ' + o + ' ') }
-    tokens = plums.strip.split /\s+/
+    PRIORITIES.keys.each { |o| plums.gsub!(o, ' ' + o + ' ') }
+    tokens = plums.strip.split(/\s+/)
     tokens.reduce [] do |acc, x|
-      if (!acc[-1].nil? && acc[-1] == '-' &&
-          (acc[-2].nil? ||
-            Priorities.keys.include?(acc[-2])))
+      if !acc[-1].nil? && acc[-1] == '-' &&
+          (acc[-2].nil? || PRIORITIES.keys.include?(acc[-2]))
         acc[0..-2] << ('-' + x)
       else
         acc << x
@@ -54,33 +51,31 @@ module ExpUtils
     arr_suffix = []
 
     arr_infix.each do |e|
-      if not Priorities.key? e # e is Numeric
+      if !PRIORITIES.key? e # e is Numeric
         arr_suffix << e
-      else
-        if e == ')'
-          loop do
-            o = oprs_stack.pop
-            break if o == '('
-            arr_suffix << o
-          end
-        elsif e == '(' ||
-            oprs_stack.empty? ||
-            [e, oprs_stack.last]
-              .map { |o| Priorities[o] }
-              .reduce(&:>)
-          oprs_stack << e
-
-        else # e <= oprs_stack.last
-          loop do
-            opr = oprs_stack.pop
-            arr_suffix << opr
-            break if oprs_stack.empty? ||
-                      [opr, oprs_stack.last]
-                        .map { |o| Priorities[o] }
-                        .reduce(&:==)
-          end
-          oprs_stack << e
+      elsif e == ')'
+        loop do
+          o = oprs_stack.pop
+          break if o == '('
+          arr_suffix << o
         end
+      elsif e == '(' ||
+          oprs_stack.empty? ||
+          [e, oprs_stack.last]
+            .map { |o| PRIORITIES[o] }
+            .reduce(&:>)
+        oprs_stack << e
+
+      else # e <= oprs_stack.last
+        loop do
+          opr = oprs_stack.pop
+          arr_suffix << opr
+          break if oprs_stack.empty? ||
+                    [opr, oprs_stack.last]
+                      .map { |o| PRIORITIES[o] }
+                      .reduce(&:==)
+        end
+        oprs_stack << e
       end
       # puts "e: #{e.inspect}"
       # puts "oprs_stack: \n#{oprs_stack.inspect}"
@@ -100,7 +95,7 @@ module ExpUtils
     runtime = []
 
     arr_suffix.each do |e|
-      if not Priorities.key? e # e is Numeric
+      if !PRIORITIES.key? e # e is Numeric
         runtime << e.to_r
       else
         begin
@@ -108,7 +103,7 @@ module ExpUtils
             opr_to_lambda(e)
               .call([runtime.pop, runtime.pop].reverse)
 
-        rescue ZeroDivisionError => e
+        rescue ZeroDivisionError
           return 'ZeroDivisionError'
         end
       end
@@ -116,7 +111,6 @@ module ExpUtils
 
     runtime.last
   end
-
 end
 
 if __FILE__ == $0

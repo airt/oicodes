@@ -1,26 +1,31 @@
 
 # http://www.codewars.com/kata/5326ef17b7320ee2e00001df
 
-def solve(mine, miner, exit)
+module Escape
+  module_function
+
+  def solve(mine, miner, exit)
+    run(deepclone(mine), [], [], miner, exit)
+  end
 
   def deepclone(src)
     Marshal.load(Marshal.dump(src))
   end
 
   def up(pos)
-    {'x' => pos['x'], 'y' => pos['y'] - 1}
+    { 'x' => pos['x'], 'y' => pos['y'] - 1 }
   end
 
   def down(pos)
-    {'x' => pos['x'], 'y' => pos['y'] + 1}
+    { 'x' => pos['x'], 'y' => pos['y'] + 1 }
   end
 
   def left(pos)
-    {'x' => pos['x'] - 1, 'y' => pos['y']}
+    { 'x' => pos['x'] - 1, 'y' => pos['y'] }
   end
 
   def right(pos)
-    {'x' => pos['x'] + 1, 'y' => pos['y']}
+    { 'x' => pos['x'] + 1, 'y' => pos['y'] }
   end
 
   def way?(mine, pos)
@@ -61,13 +66,11 @@ def solve(mine, miner, exit)
       exit(1)
     end
     steps, pos = archives.pop
-    return archives, steps, pos
+    [archives, steps, pos]
   end
 
   def run(mine, archives, steps, pos, exit)
-    if pos == exit
-      return mine, archives, steps, pos
-    end
+    return steps if pos == exit
 
     directions = wherecango(mine, pos)
 
@@ -87,47 +90,44 @@ def solve(mine, miner, exit)
     run(mine, archives, steps, pos, exit)
   end
 
-  mine, archives, steps, pos = run(deepclone(mine), [], [], miner, exit)
-  steps
-end
+  def paint_map(map)
+    way  = [0x2743].pack("U*") + ' '
+    wall = '  '
 
-def paint_map(map)
-  way  = [0x2743].pack("U*") + ' '
-  wall = '  '
-
-  view = []
-  view << '┌' + '─' * (map[0].length * 2 + 1) + '┐'
-  map.each do |r|
-    row = ''
-    row << '│ '
-    r.each do |e|
-      row << (e ? way : wall)
+    view = []
+    view << '┌' + '─' * (map[0].length * 2 + 1) + '┐'
+    map.each do |r|
+      row = ''
+      row << '│ '
+      r.each do |e|
+        row << (e ? way : wall)
+      end
+      row  << '│ '
+      view << row
     end
-    row  << '│ '
-    view << row
-  end
-  view << '└' + '─' * (map[0].length * 2 + 1) + '┘'
+    view << '└' + '─' * (map[0].length * 2 + 1) + '┘'
 
-  puts "map:"
-  puts "way:  '#{way}'"
-  puts "wall: '#{wall}'"
-  view.each do |row|
-    puts row
+    puts 'map:'
+    puts 'way:  ' + way
+    puts 'wall: ' + wall
+    view.each do |row|
+      puts row
+    end
   end
 end
 
 if __FILE__ == $0
 
   minemap = [
-    [true , true , true , true , true ],
-    [true , false, true , false, true ],
-    [false, true , true , true , false],
-    [true , false, false, true , true ],
-    [true , true , true , true , false]
+    [true, true, true, true, true],
+    [true, false, true, false, true],
+    [false, true, true, true, false],
+    [true, false, false, true, true],
+    [true, true, true, true, false]
   ]
-  paint_map(minemap)
+  Escape.paint_map(minemap)
 
-  puts solve(minemap, {'x'=>0,'y'=>4}, {'x'=>3,'y'=>0})
+  puts Escape.solve(minemap, { 'x' => 0, 'y' => 4 }, { 'x' => 3, 'y' => 0 })
 
   # ['up','up','right','right','down','right','right','up','up','up','left']
 
