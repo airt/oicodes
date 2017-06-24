@@ -1,9 +1,9 @@
-
 module Heart
+
   module_function
 
   def h2d
-    output = ""
+    output = ''
     (-15...15).each do |y1|
       y = y1 / -10.0
       (-30...30).each do |x1|
@@ -16,7 +16,7 @@ module Heart
   end
 
   def h3d
-    output = ""
+    output = ''
     ac = '.:-=+*#%@'
     (-30...30).each do |zn20|
       z = zn20 / -20.0
@@ -50,11 +50,10 @@ module Heart
     end
     0
   end
+
 end
 
 if __FILE__ == $0
-
   puts Heart.h2d
   puts Heart.h3d
-
 end
