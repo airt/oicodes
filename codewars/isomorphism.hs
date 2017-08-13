@@ -25,11 +25,11 @@ import Data.Void
 type ISO a b = (a -> b, b -> a)
 
 -- given ISO a b, we can go from a to b
-substL :: ISO a b -> (a -> b)
+substL :: ISO a b -> a -> b
 substL = fst
 
 -- and vice versa
-substR :: ISO a b -> (b -> a)
+substR :: ISO a b -> b -> a
 substR = snd
 
 -- There can be more than one ISO a b
