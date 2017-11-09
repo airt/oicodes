@@ -1,4 +1,4 @@
-# oj-codes
+# oi-codes
 
 [![Code Climate][codeclimate-badge]][codeclimate-status]
 
@@ -14,5 +14,5 @@
 
 MIT
 
-[codeclimate-badge]: https://img.shields.io/codeclimate/github/airt/oj-codes.svg
-[codeclimate-status]: https://codeclimate.com/github/airt/oj-codes
+[codeclimate-badge]: https://img.shields.io/codeclimate/github/airt/oi-codes.svg
+[codeclimate-status]: https://codeclimate.com/github/airt/oi-codes

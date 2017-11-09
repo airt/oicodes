@@ -1,13 +1,16 @@
----
-engines:
+version: "2"
+
+prepare:
+
+checks:
+
+plugins:
   fixme:
     enabled: true
   hlint:
     enabled: true
   markdownlint:
     enabled: true
-ratings:
-  paths:
-    - "**.hs"
-    - "**.md"
-exclude_paths: []
+
+exclude_patterns:
+  - "**.rb"
