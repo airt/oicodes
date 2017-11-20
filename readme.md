@@ -8,11 +8,5 @@
 
 [![LeetCode](https://leetcode.com/favicon-32x32.png)](https://leetcode.com/)
 
----
-
-## license
-
-MIT
-
-[codeclimate-badge]: https://img.shields.io/codeclimate/github/airt/oi-codes.svg
+[codeclimate-badge]: https://img.shields.io/codeclimate/maintainability/airt/oi-codes.svg
 [codeclimate-status]: https://codeclimate.com/github/airt/oi-codes

@@ -1,9 +1,5 @@
 version: "2"
 
-prepare:
-
-checks:
-
 plugins:
   fixme:
     enabled: true
@@ -13,4 +9,4 @@ plugins:
     enabled: true
 
 exclude_patterns:
-  - "**.rb"
+  - "**/*.rb"
