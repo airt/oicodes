@@ -1,9 +1,9 @@
 // https://leetcode.com/problems/two-sum
 
 /**
- * @param {number[]} xs
+ * @param {Array<number>} xs
  * @param {number} t
- * @return {number[]}
+ * @return {Array<number>}
  */
 const twoSum = (xs, t) => {
   const memo = new Map()
