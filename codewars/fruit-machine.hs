@@ -12,16 +12,13 @@ extract = zipWith (!!) . map cycle
 
 score :: [String] -> Int
 score items =
-  case length xitem of
-    1 -> threeOfTheSame . head $ xitem
-    2 -> h . head . tail $ xitem
+  case xitem of
+    [x] -> threeOfTheSame x
+    ["Wild", x] -> twoOfTheSamePlusOneWild x
+    [_, x] -> twoOfTheSame x
     _ -> 0
   where
     xitem = map head . sortOn length . group . sort $ items
-    h =
-      if head xitem == "Wild"
-        then twoOfTheSamePlusOneWild
-        else twoOfTheSame
 
 threeOfTheSame :: String -> Int
 threeOfTheSame = (* 10) . twoOfTheSame

@@ -18,5 +18,5 @@ loopSize = h []
   where
     h memo node =
       case elemIndex node memo of
-        Just i -> i + 1
+        Just i -> succ i
         Nothing -> h (node : memo) (next node)

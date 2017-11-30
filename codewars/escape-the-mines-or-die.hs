@@ -13,15 +13,17 @@ type XY = (Int, Int)
 data Move = U | D | L | R
   deriving (Eq, Show)
 
-(?!) :: [a] -> Int -> Maybe a
-m ?! n | 0 <= n && n < length m = Just $ m !! n
-_ ?! _ = Nothing
+(!?) :: [a] -> Int -> Maybe a
+__ !? n | n < 0 = Nothing
+[] !? _ = Nothing
+(x : __) !? 0 = Just x
+(_ : xs) !? n = xs !? pred n
 
-(?!!) :: [[a]] -> XY -> Maybe a
-m ?!! (x, y) = (?! y) =<< (?! x) m
+(!!?) :: [[a]] -> XY -> Maybe a
+xs !!? (i, j) = (!? j) =<< (!? i) xs
 
 living :: [[Bool]] -> XY -> Bool
-living m i = m ?!! i == Just True
+living m i = m !!? i == Just True
 
 ensureNonEmpty :: [a] -> Maybe [a]
 ensureNonEmpty [] = Nothing

@@ -12,9 +12,9 @@ stringify (Single x) = show x
 stringify (Range x y) = show x ++ "-" ++ show y
 
 aptrs :: Int -> [Ros] -> [Ros]
-aptrs x (Range b e : rs) | x == b - 1 =
+aptrs x (Range b e : rs) | x == pred b =
   Range x e : rs
-aptrs x (Single y : Single z : rs) | x == y - 1 && x == z - 2 =
+aptrs x (Single y : Single z : rs) | x == pred y && y == pred z =
   Range x z : rs
 aptrs x rs =
   Single x : rs

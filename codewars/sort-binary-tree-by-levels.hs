@@ -2,7 +2,7 @@
 
 module TreeByLevels where
 
-import Data.Maybe (catMaybes, fromMaybe)
+import Data.Maybe (catMaybes, maybe)
 import TreeByLevels.TreeNode
 
 {-
@@ -23,4 +23,4 @@ bft [] = []
 bft nodes = (value <$> nodes) ++ bft (children =<< nodes)
 
 treeByLevels :: Maybe (TreeNode a) -> [a]
-treeByLevels = fromMaybe [] . (bft . (: []) <$>)
+treeByLevels = maybe [] (bft . return)

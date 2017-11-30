@@ -5,7 +5,7 @@ module Haskell.Codewars.LookAndSayAndSum where
 import Data.List (group)
 
 lookAndSaySum :: Int -> Int
-lookAndSaySum = sum . (lookAndSays !!) . subtract 1
+lookAndSaySum = sum . (lookAndSays !!) . pred
   where
     lookAndSays = iterate ((lengthAndHead =<<) . group) [1]
-    lengthAndHead xs = [length xs, head xs]
+    lengthAndHead = sequence [length, head]

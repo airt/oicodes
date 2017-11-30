@@ -8,18 +8,20 @@ import Data.Maybe (fromJust, fromMaybe)
 newtype User = User { getPoints :: Int }
   deriving (Eq, Show)
 
-(?!) :: [a] -> Int -> Maybe a
-m ?! n | 0 <= n && n < length m = Just $ m !! n
-_ ?! _ = Nothing
+(!?) :: [a] -> Int -> Maybe a
+__ !? n | n < 0 = Nothing
+[] !? _ = Nothing
+(x : __) !? 0 = Just x
+(_ : xs) !? n = xs !? pred n
 
 ranks :: [Int]
-ranks = [-8, -7.. -1] ++ [1.. 8]
+ranks = [(-8), (-7)..(-1)] ++ [1..8]
 
 newUser :: User
 newUser = User 0
 
 rank :: User -> Int
-rank (User points) = fromMaybe 8 $ ranks ?! div points 100
+rank (User points) = fromMaybe 8 $ ranks !? div points 100
 
 progress :: User -> Int
 progress user | rank user == 8 = 0
