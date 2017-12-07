@@ -10,35 +10,33 @@ class Monad m where
   return :: a -> m a
   (>>=) :: m a -> (a -> m b) -> m b
 
-newtype Identity a = Identity { runIdentity :: a }
-  deriving (Eq, Show)
+newtype Identity a = Identity { runIdentity :: a } deriving (Eq, Show)
 
-data Maybe a = Nothing | Just a
-  deriving (Eq, Show)
+data Maybe a = Nothing | Just a deriving (Eq, Show)
 
 newtype State s a = State { runState :: s -> (a, s) }
 
-newtype Reader s a = Reader { runReader :: s -> a }
+newtype Reader r a = Reader { runReader :: r -> a }
 
-newtype Writer w a = Writer { runWriter :: (w, a) }
+newtype Writer w a = Writer { runWriter :: (a, w) }
 
 instance Monad Identity where
   return = Identity
-  (Identity v) >>= f = f v
+  Identity x >>= f = f x
 
 instance Monad Maybe where
   return = Just
+  Just x >>= f = f x
   Nothing >>= _ = Nothing
-  (Just v) >>= f = f v
 
 instance Monad (State s) where
-  return v = State $ \s -> (v, s)
-  (State c) >>= f = State $ \s -> let (vi, si) = c s; (State ci) = f vi in ci si
+  return x = State $ \s -> (x, s)
+  State h >>= f = State $ \s -> let (x, s') = h s; State h' = f x in h' s'
 
-instance Monad (Reader s) where
-  return v = Reader $ const v
-  (Reader c) >>= f = Reader $ \s -> let (Reader ci) = f $ c s in ci s
+instance Monad (Reader r) where
+  return x = Reader $ const x
+  Reader h >>= f = Reader $ \r -> let Reader h' = f $ h r in h' r
 
 instance Monoid w => Monad (Writer w) where
-  return v = Writer (mempty, v)
-  (Writer (r, v)) >>= f = Writer $ let (Writer (ri, vi)) = f v in (mappend r ri, vi)
+  return x = Writer (x, mempty)
+  Writer (x, w) >>= f = let Writer (x', w') = f x in Writer (x', mappend w w')
