@@ -14,9 +14,3 @@ class Solution(numbers: Array[Int]) {
   }
 
 }
-
-/**
- * Your Solution object will be instantiated and called as such:
- * var o = new Solution(numbers)
- * var r = o.pick(target)
- */
