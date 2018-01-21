@@ -3,7 +3,6 @@
 module CanYouGetTheLoop where
 
 import CanYouGetTheLoop.Types
-import Data.List (elemIndex)
 
 {-
 data Node a
@@ -14,9 +13,12 @@ next :: Node a -> Node a
 -}
 
 loopSize :: Eq a => Node a -> Int
-loopSize = h []
+loopSize head = walk 1 (next intersection) intersection
   where
-    h memo node =
-      case elemIndex node memo of
-        Just i -> succ i
-        Nothing -> h (node : memo) (next node)
+    intersection = race head (next head)
+    race x y
+      | x == y = x
+      | otherwise = race (next x) (next $ next y)
+    walk n x t
+      | x == t = n
+      | otherwise = walk (succ n) (next x) t
