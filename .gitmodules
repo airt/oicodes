@@ -1,0 +1,3 @@
+[submodule "kaggle"]
+	path = kaggle
+	url = https://github.com/airt/kaggle
