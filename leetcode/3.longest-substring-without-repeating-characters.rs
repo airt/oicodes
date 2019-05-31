@@ -13,10 +13,11 @@ impl Solution {
         let mut b = -1;
         let mut l = 0;
         for (i, c) in s.chars().enumerate() {
-            if let Some(v) = m.insert(c, i as i32) {
+            let i = i as i32;
+            if let Some(v) = m.insert(c, i) {
                 b = b.max(v);
             }
-            l = l.max(i as i32 - b);
+            l = l.max(i - b);
         }
         l
     }
