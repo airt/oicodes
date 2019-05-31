@@ -13,7 +13,7 @@ impl Solution {
             .filter(|s| s.iter().eq(s.iter().rev()))
             .next()
             .and_then(|s| String::from_utf8(s.to_vec()).ok())
-            .unwrap_or("".to_string())
+            .unwrap_or_default()
     }
 }
 // @lc code=end
