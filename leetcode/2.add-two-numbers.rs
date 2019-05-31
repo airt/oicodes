@@ -31,13 +31,13 @@ impl Solution {
             (None, Some(y)) => Some(y),
             (Some(x), None) => Some(x),
             (Some(x), Some(y)) => {
-                let mut val = x.val + y.val;
-                let mut next = Self::add_two_numbers(x.next, y.next);
-                if val >= 10 {
-                    val -= 10;
-                    next = Self::add_two_numbers(next, Some(Box::new(ListNode::new(1))));
+                let mut v = x.val + y.val;
+                let mut n = Self::add_two_numbers(x.next, y.next);
+                if v >= 10 {
+                    v -= 10;
+                    n = Self::add_two_numbers(n, Some(Box::new(ListNode::new(1))));
                 }
-                Some(Box::new(ListNode { val, next }))
+                Some(Box::new(ListNode { val: v, next: n }))
             }
         }
     }
