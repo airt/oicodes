@@ -6,11 +6,11 @@
 
 // @lc code=start
 impl Solution {
-    pub fn two_sum(xs: Vec<i32>, t: i32) -> Vec<i32> {
+    pub fn two_sum(xs: Vec<i32>, z: i32) -> Vec<i32> {
         use std::collections::HashMap;
         let mut m = HashMap::new();
         for (i, x) in xs.iter().enumerate() {
-            if let Some(&j) = m.get(&(t - x)) {
+            if let Some(&j) = m.get(&(z - x)) {
                 return vec![j as i32, i as i32];
             }
             m.insert(x, i);
