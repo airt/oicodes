@@ -15,9 +15,7 @@ impl Solution {
     let mut l = 0;
     for (i, x) in s.bytes().enumerate() {
       let i = i as i32;
-      if let Some(v) = m.insert(x, i) {
-        b = b.max(v);
-      }
+      b = m.insert(x, i).map_or(b, |v| b.max(v));
       l = l.max(i - b);
     }
     l
