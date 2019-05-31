@@ -4,24 +4,26 @@
  * [13] Roman to Integer
  */
 
+pub struct Solution;
+
 // @lc code=start
 impl Solution {
-    pub fn roman_to_int(s: String) -> i32 {
-        s.chars().rfold(0, |z, c| {
-            z + match c {
-                'I' if z >= 5 => -1,
-                'I' => 1,
-                'V' => 5,
-                'X' if z >= 50 => -10,
-                'X' => 10,
-                'L' => 50,
-                'C' if z >= 500 => -100,
-                'C' => 100,
-                'D' => 500,
-                'M' => 1000,
-                _ => 0,
-            }
-        })
-    }
+  pub fn roman_to_int(s: String) -> i32 {
+    s.bytes().rfold(0, |z, c| {
+      z + match c {
+        b'I' if z >= 5 => -1,
+        b'I' => 1,
+        b'V' => 5,
+        b'X' if z >= 50 => -10,
+        b'X' => 10,
+        b'L' => 50,
+        b'C' if z >= 500 => -100,
+        b'C' => 100,
+        b'D' => 500,
+        b'M' => 1000,
+        _ => 0,
+      }
+    })
+  }
 }
 // @lc code=end
