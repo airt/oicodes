@@ -7,9 +7,9 @@
 // @lc code=start
 impl Solution {
     pub fn longest_palindrome(s: String) -> String {
-        (1..=s.len())
+        (0..s.len())
             .rev()
-            .flat_map(|n| s.as_bytes().windows(n))
+            .flat_map(|n| s.as_bytes().windows(n + 1))
             .filter(|s| s.iter().rev().eq(s.iter()))
             .next()
             .and_then(|s| String::from_utf8(s.to_vec()).ok())
