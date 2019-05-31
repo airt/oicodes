@@ -10,7 +10,7 @@ impl Solution {
         (1..=s.len())
             .rev()
             .flat_map(|n| s.as_bytes().windows(n))
-            .filter(|s| s.iter().eq(s.iter().rev()))
+            .filter(|s| s.iter().rev().eq(s.iter()))
             .next()
             .and_then(|s| String::from_utf8(s.to_vec()).ok())
             .unwrap_or_default()
