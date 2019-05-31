@@ -6,9 +6,8 @@
 
 // @lc code=start
 impl Solution {
-    pub fn three_sum(xs: Vec<i32>) -> Vec<Vec<i32>> {
+    pub fn three_sum(mut xs: Vec<i32>) -> Vec<Vec<i32>> {
         let mut rs = vec![];
-        let mut xs = xs;
         xs.sort_unstable();
         for i in 0..xs.len() {
             if i > 0 && xs[i] == xs[i - 1] {
