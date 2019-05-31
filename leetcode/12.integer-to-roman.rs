@@ -7,20 +7,18 @@
 // @lc code=start
 impl Solution {
     pub fn int_to_roman(n: i32) -> String {
-        let n = n as usize;
-        let m: &[&[&str]] = &[
-            &["", "M", "MM", "MMM"],
-            &["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"],
-            &["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],
-            &["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
+        let m = [
+            "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "", "X", "XX", "XXX", "XL",
+            "L", "LX", "LXX", "LXXX", "XC", "", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC",
+            "CM", "", "M", "MM", "MMM",
         ];
-        let s = &[
-            m[0][n / 1000],
-            m[1][n % 1000 / 100],
-            m[2][n % 100 / 10],
-            m[3][n % 10],
+        let r = [
+            m[n as usize % 10000 / 1000 + 30],
+            m[n as usize % 1000 / 100 + 20],
+            m[n as usize % 100 / 10 + 10],
+            m[n as usize % 10],
         ];
-        s.concat()
+        r.concat()
     }
 }
 // @lc code=end
