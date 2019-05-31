@@ -6,7 +6,7 @@
 
 // @lc code=start
 impl Solution {
-    pub fn three_sum_closest(mut xs: Vec<i32>, t: i32) -> i32 {
+    pub fn three_sum_closest(mut xs: Vec<i32>, z: i32) -> i32 {
         let mut r = std::i32::MAX;
         xs.sort_unstable();
         for i in 0..xs.len() {
@@ -25,10 +25,10 @@ impl Solution {
                     continue;
                 }
                 let m = xs[i] + xs[i1] + xs[i2];
-                if (m - t).abs() < (r - t).abs() {
+                if (m - z).abs() < (r - z).abs() {
                     r = m;
                 }
-                if m <= t {
+                if m <= z {
                     i1 += 1;
                 } else {
                     i2 -= 1;
