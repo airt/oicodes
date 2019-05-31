@@ -7,25 +7,17 @@
 // @lc code=start
 impl Solution {
     pub fn my_atoi(s: String) -> i32 {
-        let mut n: i32 = 0;
-        let mut p: i32 = 0;
-        for c in s.trim_start().chars() {
-            match c {
-                '+' if p == 0 => p = 1,
-                '-' if p == 0 => p = -1,
-                '0'..='9' => {
-                    p = if p == 0 { 1 } else { p };
-                    let h = || n.checked_mul(10)?.checked_add(c as i32 - '0' as i32);
-                    if let Some(x) = h() {
-                        n = x
-                    } else {
-                        return if p < 0 { std::i32::MIN } else { std::i32::MAX };
-                    }
-                }
-                _ => break,
-            }
-        }
-        n * p
+        let mut s = s.trim_start().bytes().peekable();
+        let p = s
+            .peek()
+            .cloned()
+            .filter(|b| [0x2b, 0x2d].contains(b))
+            .and_then(|_| s.next())
+            .map_or(1, |b| 0x2c - b as i32);
+        s.take_while(|b| (0x30..0x3a).contains(b))
+            .try_fold(0i32, |z, b| z.checked_mul(10)?.checked_add(b as i32 - 0x30))
+            .and_then(|n| n.checked_mul(p))
+            .unwrap_or(if p < 0 { std::i32::MIN } else { std::i32::MAX })
     }
 }
 // @lc code=end
