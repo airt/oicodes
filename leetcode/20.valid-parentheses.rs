@@ -4,20 +4,22 @@
  * [20] Valid Parentheses
  */
 
+pub struct Solution;
+
 // @lc code=start
 impl Solution {
-    pub fn is_valid(s: String) -> bool {
-        use std::collections::HashMap;
-        let p = HashMap::from([('(', ')'), ('[', ']'), ('{', '}')]);
-        let mut m = vec![];
-        for c in s.chars().rev() {
-            match p.get(&c) {
-                Some(v) if Some(v) == m.pop().as_ref() => (),
-                Some(v) => return false,
-                None => m.push(c),
-            }
-        }
-        m.is_empty()
+  pub fn is_valid(s: String) -> bool {
+    use std::collections::HashMap;
+    let m = HashMap::from([(b'(', b')'), (b'[', b']'), (b'{', b'}')]);
+    let mut t = vec![];
+    for x in s.bytes().rev() {
+      match m.get(&x) {
+        Some(v) if Some(v) != t.pop().as_ref() => return false,
+        None => t.push(x),
+        _ => (),
+      }
     }
+    t.is_empty()
+  }
 }
 // @lc code=end
