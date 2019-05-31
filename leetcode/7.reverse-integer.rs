@@ -8,8 +8,8 @@
 impl Solution {
     pub fn reverse(x: i32) -> i32 {
         let h = || {
-            let mut x: i32 = x;
-            let mut z: i32 = 0;
+            let mut x = x;
+            let mut z = 0i32;
             while x != 0 {
                 z = z.checked_mul(10)?.checked_add(x % 10)?;
                 x = x / 10;
