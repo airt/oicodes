@@ -11,9 +11,9 @@ impl Solution {
         let mut m = HashMap::new();
         let mut b = -1;
         let mut l = 0;
-        for (i, c) in s.bytes().enumerate() {
+        for (i, x) in s.bytes().enumerate() {
             let i = i as i32;
-            if let Some(v) = m.insert(c, i) {
+            if let Some(v) = m.insert(x, i) {
                 b = b.max(v);
             }
             l = l.max(i - b);
