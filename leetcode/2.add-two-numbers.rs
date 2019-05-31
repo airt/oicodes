@@ -23,10 +23,10 @@
 // }
 impl Solution {
     pub fn add_two_numbers(
-        xs: Option<Box<ListNode>>,
-        ys: Option<Box<ListNode>>,
+        x: Option<Box<ListNode>>,
+        y: Option<Box<ListNode>>,
     ) -> Option<Box<ListNode>> {
-        match (xs, ys) {
+        match (x, y) {
             (None, None) => None,
             (None, Some(y)) => Some(y),
             (Some(x), None) => Some(x),
