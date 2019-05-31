@@ -9,8 +9,8 @@ pub struct Solution;
 // @lc code=start
 impl Solution {
   pub fn roman_to_int(s: String) -> i32 {
-    s.bytes().rfold(0, |z, c| {
-      z + match c {
+    s.bytes().rfold(0, |z, x| {
+      z + match x {
         b'I' if z >= 5 => -1,
         b'I' => 1,
         b'V' => 5,
