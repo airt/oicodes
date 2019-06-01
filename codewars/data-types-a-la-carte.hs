@@ -1,24 +1,22 @@
--- https://www.codewars.com/kata/data-types-a-la-carte-fork
+-- https://www.codewars.com/kata/data-types-a-la-carte
 
 {-# LANGUAGE TypeOperators, DeriveFunctor, MultiParamTypeClasses #-}
-{-# LANGUAGE FlexibleInstances, FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances, FlexibleContexts, OverlappingInstances #-}
 
 module ALaCarte where
 
 -- Definitions
-newtype Expr f = In (f (Expr f))
+data Expr f = In (f (Expr f))
 
 -- We define a separate data type for each constructor we want to use
 -- then we can combine them together using the (:+:) operator to make
 -- our data types à la carte.
 
-newtype Lit a = Lit Int
-
+data Lit a = Lit Int
 data Add a = Add a a
 
 -- Coproduct
 data (f :+: g) e = Inl (f e) | Inr (g e)
-
 infixr 1 :+:
 
 -- By defining functor instances we can write a generic fold operator
@@ -37,9 +35,8 @@ instance (Functor f, Functor g) => Functor (f :+: g) where
 foldExpr :: Functor f => (f a -> a) -> Expr f -> a
 foldExpr f (In e) = f $ foldExpr f <$> e
 
--- Now we can write a simple interpreter.
--- Your definitions should correspond closely with the definition
--- for the old interpreter given in the description.
+-- Now we can write a simple interpreter. Your definitions should correspond
+-- closely with the definition for the old interpreter given in the description.
 
 class Functor f => Eval f where
   evalAlgebra :: f Int -> Int
@@ -67,14 +64,11 @@ pain = In (Inr (Add (In (Inl (Lit 5))) (In (Inl (Lit 6)))))
 
 -- Injection
 -- To ease writing expressions, we will now define a type class
--- which will choose the right constructors for us.
--- Think of the sub :<: sup to say that
+-- which will choose the right constructors for us. Think of the sub :<: sup to say that
 -- sub is a subtype of sup.
 
--- It might also help to think of :+:
--- as the cons operator for a type level list.
--- Then the type class can be viewed as
--- searching for the correct injection by
+-- It might also help to think of :+: as the cons operator for a type level list.
+-- Then the type class can be viewed as searching for the correct injection by
 -- searching through the list for the correct type.
 
 class (Functor sub, Functor sup) => sub :<: sup where
@@ -84,14 +78,13 @@ class (Functor sub, Functor sup) => sub :<: sup where
 instance Functor f => f :<: f where
   inj = id
 
-instance {-# OVERLAPS #-} (Functor f, Functor g) => f :<: (f :+: g) where
+instance (Functor f, Functor g) =>  f :<: (f :+: g) where
   inj = Inl
 
 instance (Functor f, Functor g, Functor h, f :<: g) => f :<: (h :+: g) where
   inj = Inr . inj
 
--- Note: overlapping instances is safe
--- as long as :+: associates to the right.
+-- Note: This part requires overlapping instances, this is safe as long as :+: associates to the right.
 -- A modern implementation would use type families.
 
 -- Then we can use this type class to write smart constructors.
